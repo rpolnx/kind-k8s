@@ -1,7 +1,5 @@
 # Kind k8s
 
-
-
 # Introduction
 
 Basic kind usage with some popular kubernetes components
@@ -9,6 +7,7 @@ Basic kind usage with some popular kubernetes components
 [Starts here](https://kind.sigs.k8s.io/docs/user/quick-start/)
 
 ## Requirements
+
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/)
 - [Kind](https://kind.sigs.k8s.io/)
 - [Istioctl](https://istio.io/latest/docs/setup/install/istioctl/)
@@ -38,12 +37,15 @@ istioctl install --set profile=demo -y
 Configuraton from the [docs](https://kind.sigs.k8s.io/docs/user/loadbalancer/)
 
 ```sh
+
  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/master/manifests/namespace.yaml
 
  kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/master/manifests/metallb.yaml
 
+ # Search docker network to apply on configmap
+ docker network inspect -f '{{.IPAM.Config}}' kind
  kubectl apply -f metallb-configmap.yaml
 ```
 
