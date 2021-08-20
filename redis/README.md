@@ -1,5 +1,15 @@
 # Bitnami redis
 
+## Repo info
+
+Chart repository [github](https://github.com/bitnami/charts/tree/master/bitnami/redis)
+
+Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/redis)
+
+- Chart Version: ``14.8.8``
+
+## Installation
+
 ```sh
   ### TLS certs ###
 
@@ -50,11 +60,10 @@
   --from-file ca-cert=./root-ca/certs/ca.cert.pem
 
   ### Installing redis chart ###
-  VERSION=14.8.8
 
   helm repo add bitnami https://charts.bitnami.com/bitnami
 
-  helm upgrade --install --version $VERSION -n tools redis-cluster bitnami/redis \
+  helm upgrade --install --version 14.8.8 -n tools redis-cluster bitnami/redis \
   --values  "./redis/values.yaml" \
   --set     "master.service.type=LoadBalancer" \
   --set     "master.persistence.size=1Gi" \
