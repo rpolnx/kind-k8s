@@ -22,12 +22,14 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/redis)
   -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=Redis Server/CN=rpolnx.com.br" # 3 years
 
   # Sign in server cert from root ca
-  openssl x509 -req -days 1095 -set_serial 01 \
+  openssl x509 -req -days 1095 -CAcreateserial \
   -in ./redis/certs/redis-server.req.pem \
   -out ./redis/certs/redis-server.cert.pem \
   -CA ./root-ca/certs/ca.cert.pem \
   -CAkey ./root-ca/certs/ca.key.pem
-
+  -extensions SAN \
+  -extfile <(cat /etc/ssl/openssl.cnf \
+    <(printf "\n[SAN]\nsubjectAltName=DNS:*.svc.cluster.local"))
 
   # Generate client cert and key
   openssl req -newkey rsa:2048 -nodes -days 1095 \
@@ -36,11 +38,14 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/redis)
   -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=Redis Client/CN=rpolnx.com.br" # 3 years
 
   # Sign in server cert from root ca
-  openssl x509 -req -days 1095 -set_serial 01 \
+  openssl x509 -req -days 1095 -CAcreateserial \
   -in ./redis/certs/redis-client.req.pem \
   -out ./redis/certs/redis-client.cert.pem \
   -CA ./root-ca/certs/ca.cert.pem \
-  -CAkey ./root-ca/certs/ca.key.pem
+  -CAkey ./root-ca/certs/ca.key.pem \
+  -extensions SAN \
+  -extfile <(cat /etc/ssl/openssl.cnf \
+    <(printf "\n[SAN]\nsubjectAltName=DNS:*.svc.cluster.local"))
 
   # (Optional) Verify certs
   openssl verify -CAfile ./root-ca/certs/ca.cert.pem ./root-ca/certs/ca.cert.pem ./redis/certs/redis-server.cert.pem
