@@ -1,2 +1,7 @@
 *.pem
+*.crt
+*.cst
 *.srl
+*.key
+*.jks
+*.properties
