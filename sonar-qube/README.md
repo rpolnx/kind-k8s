@@ -62,5 +62,10 @@ This commands will generate "coverage.out" and report.json
 ```sh
 
   go test -v ./test/... -coverpkg=./... -coverprofile="coverage.out" -covermode=count -json > report.json;
+  
+  # for multiple packages
+  go test -v ./test/... -coverpkg=./application/...,./domain/...,./infrastructure/... \
+  -coverprofile="coverage.out" -covermode=count -json > report.json;
+  
   go tool cover -func coverage.out
 ```
