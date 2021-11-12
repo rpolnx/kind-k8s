@@ -1,0 +1,39 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  annotations:
+    cert-manager.io/issue-temporary-certificate: "true"
+    meta.helm.sh/release-name: ramais-site
+    meta.helm.sh/release-namespace: production
+  creationTimestamp: "2021-10-01T22:03:35Z"
+  generation: 1
+  labels:
+    app: ramais-site
+    app.kubernetes.io/instance: ramais-site
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ramais-site
+    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: ramais-site-0.0.1
+  name: tls-ramais-stg-site
+  namespace: istio-system
+  resourceVersion: "5696321"
+  uid: b57a492e-c57a-4232-b12a-9efc53734bbd
+spec:
+  dnsNames:
+  - ramais.reclameaqui.com.br
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-istio
+  secretName: tls-ramais-stg-site
+status:
+  conditions:
+  - lastTransitionTime: "2021-10-01T22:03:36Z"
+    message: Certificate is up to date and has not expired
+    observedGeneration: 1
+    reason: Ready
+    status: "True"
+    type: Ready
+  notAfter: "2021-12-30T21:16:53Z"
+  notBefore: "2021-10-01T21:16:54Z"
+  renewalTime: "2021-11-30T21:16:53Z"
+  revision: 1
