@@ -6,6 +6,10 @@ Basic kind usage with some popular kubernetes components
 
 [Starts here](https://kind.sigs.k8s.io/docs/user/quick-start/)
 
+```sh
+kind create cluster --config  cluster-kind.yml --name kind-common
+```
+
 ## Requirements
 
 - [Kubectl](https://kubernetes.io/docs/tasks/tools/)
@@ -20,16 +24,10 @@ Basic kind usage with some popular kubernetes components
  kubectl apply -f components-ms.yaml
 ```
 
-## Weave
+## Weave (Optional)
 
 ```sh
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
-```
-
-## Istio from cli
-
-```sh
-istioctl install --set profile=demo -y
 ```
 
 ## MetalLB
@@ -47,6 +45,12 @@ Configuraton from the [docs](https://kind.sigs.k8s.io/docs/user/loadbalancer/)
  # Search docker network to apply on configmap
  docker network inspect -f '{{.IPAM.Config}}' kind
  kubectl apply -f metallb-configmap.yaml
+```
+
+## Istio from cli
+
+```sh
+istioctl install --set profile=demo --vklog=9 -y
 ```
 
 ## Rancher
