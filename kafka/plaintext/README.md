@@ -6,7 +6,7 @@ Chart repository [github](https://github.com/bitnami/charts/tree/master/bitnami/
 
 Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/kafka)
 
-- Chart Version: `14.4.3`
+- Chart Version: `14.6.0`
 
 # Installation
 
@@ -14,8 +14,9 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/kafka)
 
 ```sh
   export NUMBER_OF_BROKERS=3
-  export NS=tools
+  export NS=default
   export SECRET_NAME=kafka-secret
+  export ZOOKEEPER_USER=zkp_user
   export ZOOKEEPER_PASSWORD=$(openssl rand -base64 20)
 ```
 
@@ -30,7 +31,7 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/kafka)
 ```sh
   helm repo add bitnami https://charts.bitnami.com/bitnami
 
-  helm upgrade --install --version 14.4.3 -n $NS kafka-cluster bitnami/kafka \
+  helm upgrade --install --version 14.6.0 -n $NS kafka-cluster bitnami/kafka \
   --values  "./values.yaml" \
   --set     "heapOpts=-Xmx1024m -Xms1024m" \
   --set     "auth.clientProtocol=plaintext" \
@@ -47,13 +48,13 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/kafka)
   --set     "provisioning.numPartitions=5" \
   --set     "provisioning.replicationFactor=$NUMBER_OF_BROKERS" \
   --set     "deleteTopicEnable=true" \
-  --set     "auth.jaas.zookeeperUser=zookeeperUser" \
-  --set     "auth.jaas.zookeeperPassword=$(k get -n $NS secret $SECRET_NAME -o=jsonpath='{.data.zookeeper-password}' | base64 -d)" \
   --set     "zookeeper.auth.enabled=true" \
-  --set     "zookeeper.auth.clientUser=zookeeperUser" \
-  --set     "zookeeper.auth.clientPassword=$(k get -n $NS secret $SECRET_NAME -o=jsonpath='{.data.zookeeper-password}' | base64 -d)" \
-  --set     "zookeeper.auth.serverUsers=zookeeperUser" \
-  --set     "zookeeper.auth.serverPasswords=$(k get -n $NS secret kafka-secret -o=jsonpath='{.data.zookeeper-password}' | base64 -d)" \
+  --set     "zookeeper.auth.clientUser=$ZOOKEEPER_USER" \
+  --set     "zookeeper.auth.clientPassword=$ZOOKEEPER_PASSWORD" \
+  --set     "zookeeper.auth.serverUsers=$ZOOKEEPER_USER" \
+  --set     "zookeeper.auth.serverPasswords=$ZOOKEEPER_PASSWORD" \
+  --set     "auth.jaas.zookeeperUser=$ZOOKEEPER_USER" \
+  --set     "auth.jaas.zookeeperPassword=$ZOOKEEPER_PASSWORD" \
   --set     "zookeeper.replicaCount=$NUMBER_OF_BROKERS" \
   --set     "metrics.kafka.enabled=true" \
   --set     "metrics.jmx.enabled=true"
@@ -64,8 +65,9 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/kafka)
 
 ## Kafka drop
 ```sh
-    helm upgrade -n tools -i kafdrop kafka-drop/chart \
-        --set kafka.brokerConnect=kafka-cluster-headless.tools.svc.cluster.local:9092
+    helm upgrade -n $NS -i kafdrop kafka-drop/chart \
+        --set kafka.brokerConnect=kafka-cluster-headless.default.svc.cluster.local:9092 \
+        --set service.type=LoadBalancer
 ```
 
 
