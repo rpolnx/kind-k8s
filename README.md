@@ -80,6 +80,8 @@ helm install rancher rancher-latest/rancher --namespace cattle-system \
 ### Testing
 
 ```sh
+ k apply -f nginx-example.yaml
+
  kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.10/samples/bookinfo/platform/kube/bookinfo.yaml
  kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.10/samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
