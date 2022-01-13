@@ -1,7 +1,8 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: example-gateway
+  name: gitlab-gateway
+  namespace: tools
 spec:
   selector:
     istio: ingressgateway
@@ -11,7 +12,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "api-gateway-pvt.rpolnx.com.br"
+    - "gitlab-pvt.rpolnx.com.br"
     tls:
       httpsRedirect: true
   - port:
@@ -20,6 +21,12 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: ingress-cert
+      credentialName: gitlab-cert
     hosts:
-    - "api-gateway-pvt.rpolnx.com.br"
+    - "gitlab-pvt.rpolnx.com.br"
+  - port:
+      number: 8080
+      name: http2
+      protocol: http
+    hosts:
+    - "gitlab-pvt.rpolnx.com.br"

@@ -4,7 +4,7 @@
 
 Docs [Gitlab docs](https://docs.gitlab.com/charts/quickstart/index.html)
 
-- Chart Version: `latest`
+- Chart Version: `5.6.2`
 
 ## Installation
 
@@ -13,49 +13,20 @@ Docs [Gitlab docs](https://docs.gitlab.com/charts/quickstart/index.html)
 
   helm repo add gitlab https://charts.gitlab.io/
 
-  helm install -n tools gitlab gitlab/gitlab \
-    --set global.hosts.domain=rpolnx.com.br \
+  helm repo update
+
+  helm install -n tools gitlab gitlab/gitlab --version 5.6.2 \
+    --values gitlab/values.yaml \
+    --timeout 600s \
+    --set global.hosts.https=false \
+    --set global.ingress.configureCertmanager=false \
+    --set global.ingress.enabled=false \
+    --set nginx-ingress.enabled=false \
+    --set certmanager.enabled=false \
+    --set certmanager.install=false \
+    --set global.edition=ce \
+    --set global.hosts.domain=gitlab-pvt.rpolnx.com.br \
     --set certmanager-issuer.email=rodrigorpogo@gmail.com
+    # --set global.hosts.externalIP=10.10.10.10 \
 
-
-```
-
-```sh
-  PG_PASSWORD=$(openssl rand -base64 20)
-  ADMIN_PASSWORD=$(openssl rand -base64 20)
-
-  k -n tools create secret generic
-
-  kubectl create secret generic -n tools sonarqube-admin \
-  --from-literal password=$ADMIN_PASSWORD
-```
-
-## Golang CI steps
-
-### Needs to configure properties
-
-```sh
-sonar.sources=.
-sonar.exclusions=**/*_test.go
-
-sonar.tests=.
-sonar.test.inclusions=**/*_test.go
-
-sonar.go.tests.reportPaths=report.json
-sonar.go.coverage.reportPaths=coverage.out
-```
-
-### Run tests and generate configs
-
-This commands will generate "coverage.out" and report.json
-
-```sh
-
-  go test -v ./test/... -coverpkg=./... -coverprofile="coverage.out" -covermode=count -json > report.json;
-  
-  # for multiple packages
-  go test -v ./test/... -coverpkg=./application/...,./domain/...,./infrastructure/... \
-  -coverprofile="coverage.out" -covermode=count -json > report.json;
-  
-  go tool cover -func coverage.out
 ```
