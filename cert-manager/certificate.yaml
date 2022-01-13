@@ -23,4 +23,4 @@ spec:
     group: cert-manager.io
   commonName: api-gateway-pvt.rpolnx.com.br
   dnsNames:
-  - api-gateway-pvt.rpolnx.com.br
+  - "api-gateway-pvt.rpolnx.com.br"

@@ -14,8 +14,8 @@
   openssl genrsa -out ./root-ca/certs/tls.key 2048
 
   # Generate the self-signed root CA certificate
-  openssl req -x509 -sha256 -new -nodes -key ./root-ca/certs/tls.key -days 1095 -out ./root-ca/certs/tls.crt \
-  -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=IT Department/CN=rpolnx.com.br" # 3 years
+  openssl req -x509 -sha256 -new -nodes -key ./root-ca/certs/tls.key -days 2190 -out ./root-ca/certs/tls.crt \
+  -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=IT Department/CN=rpolnx.com.br/emailAddress=rodrigorpogo@gmail.com/" # 3 years
 
   k get ns tools || kubectl create namespace tools
 
