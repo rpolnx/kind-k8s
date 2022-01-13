@@ -13,7 +13,7 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/kafka)
 ## Initialize variables
 
 ```sh
-  export NUMBER_OF_BROKERS=2
+  export NUMBER_OF_BROKERS=3
   export NS=default
   export SECRET_NAME=kafka-secret
   export ZOOKEEPER_USER=zkp_user
@@ -73,23 +73,4 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/kafka)
 
 ## Monitoring
 
-### Adding prometheus scafold
-```sh
- k -n $NS edit cm prometheus-server
-```
-
-```yaml
-[...]
-    scrape_configs:
-    - job_name: 'kafka-jmx'
-      metrics_path: /metrics
-      static_configs:
-      - targets: ['kafka-cluster-jmx-metrics.default.svc.cluster.local:5556']
-    - job_name: 'kafka-metrics'
-      metrics_path: /metrics
-      static_configs:
-      - targets: ['kafka-cluster-metrics.default.svc.cluster.local:9308']
-```
-
-### Extra config
-- https://www.metricfire.com/blog/kafka-monitoring-using-prometheus/
+# https://www.metricfire.com/blog/kafka-monitoring-using-prometheus/
