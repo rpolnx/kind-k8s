@@ -50,7 +50,7 @@ Configuraton from the [docs](https://kind.sigs.k8s.io/docs/user/loadbalancer/)
 ## Istio from cli
 
 ```sh
-istioctl install --set profile=demo --vklog=9 -y
+    istioctl install --set profile=demo --vklog=9 -y
 ```
 
 ## Rancher

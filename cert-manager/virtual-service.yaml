@@ -9,11 +9,11 @@ spec:
   - api-gateway-pvt.rpolnx.com.br
   http:
   - name: "nginx-v1-router"
-    match:
-    - uri:
-        prefix: "/nginx"
-    rewrite:
-      uri: "/"
+    # match:
+    # - uri:
+    #     prefix: "/nginx"
+    # rewrite:
+    #   uri: "/"
     route:
     - destination:
         host: nginx
