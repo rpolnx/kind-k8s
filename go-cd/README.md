@@ -17,12 +17,13 @@ Docs [go cd docs](https://docs.gocd.org/current/)
   helm upgrade --install -n tools gocd gocd/gocd --version 1.40.2 \
     --values go-cd/values.yaml \
     --timeout 600s \
-    --set rbac.create=false \
-    --set serviceAccount.create=false \
+    --set rbac.create=true \
+    --set serviceAccount.create=true \
     --set server.service.type=ClusterIP \
     --set server.server.enabled=false \
     --set server.ingress.enabled=false \
-    --set agent.replicaCount=2
+    --set agent.replicaCount=1 \
+    --set "agent.env.goServerUrl=http://gocd-server.tools.svc.cluster.local:8153/go"
 
 ```
 
