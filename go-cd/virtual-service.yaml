@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: gocd-vs
+  namespace: tools
+spec:
+  gateways:
+  - gocd-gateway
+  hosts:
+  - gocd.rpolnx.com.br
+  http:
+  - name: "gocd-v1-router"
+    route:
+    - destination:
+        host: gocd-server
+        port:
+          number: 8153

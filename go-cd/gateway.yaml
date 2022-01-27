@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: gocd-gateway
+  namespace: tools
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "gocd.rpolnx.com.br"
+    # tls:
+    #   httpsRedirect: true
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: gocd-cert
+    hosts:
+    - "gocd.rpolnx.com.br"
