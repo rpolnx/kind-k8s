@@ -47,6 +47,14 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manif
  kubectl apply -f metallb-configmap.yaml
 ```
 
+## Nginx ingress controller
+
+```sh
+    helm repo add nginx-stable https://helm.nginx.com/stable
+    helm repo update
+    helm install nginx-ingress nginx-stable/nginx-ingress
+```
+
 ## Istio from cli
 
 ```sh

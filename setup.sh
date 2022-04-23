@@ -22,6 +22,7 @@ sed -i -E "s/(172.).*/$SUBNET_RANGE/" metallb-configmap.yaml
 
 kubectl apply -f metallb-configmap.yaml
 
+helm install nginx-ingress nginx-stable/nginx-ingress
 
 istioctl install --set profile=demo --vklog=3 -y
 
