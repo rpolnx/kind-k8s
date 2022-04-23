@@ -56,8 +56,7 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manif
 ## Rancher
 
 ```sh
-helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
-kubectl create namespace cattle-system
+
 ```
 
 ### Cert manager (required from certified)
@@ -70,11 +69,13 @@ helm repo update
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.0.4
 ```
 
-### Instalation using lets encrypt
+### Instalation rancher
 
 ```sh
+helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
+kubectl create namespace cattle-system
 helm install rancher rancher-latest/rancher --namespace cattle-system \
-    --set hostname=localhost --set replicas=1 --set ingress.tls.source=letsEncrypt --set letsEncrypt.email=localhost@gmail.com
+    --set hostname=eks.rpolnx.com.br --set replicas=1 --set ingress.tls.source=letsEncrypt --set letsEncrypt.email=rodrigorpogo@gmail.com
 ```
 
 ### Testing

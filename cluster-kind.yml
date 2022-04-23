@@ -9,7 +9,7 @@ nodes:
 # - role: control-plane
 # - role: worker
 # - role: worker
-- role: worker
-  extraMounts:
-    - hostPath: /data/kind/worker
-      containerPath: /data
+# - role: worker
+#   extraMounts:
+#     - hostPath: /data/kind/worker
+#       containerPath: /data
