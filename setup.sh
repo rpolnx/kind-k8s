@@ -22,8 +22,19 @@ sed -i -E "s/(172.).*/$SUBNET_RANGE/" metallb-configmap.yaml
 
 kubectl apply -f metallb-configmap.yaml
 
-helm install nginx-ingress nginx-stable/nginx-ingress
+helm install nginx-ingress nginx-stable/nginx-ingress \
+    --set nameOverride='nginx-ingress' \
+    --set fullnameOverride='nginx-ingress'
 
 istioctl install --set profile=demo --vklog=3 -y
+
+kubectl apply --validate=false \
+-f https://github.com/cert-manager/cert-manager/releases/download/v1.8.0/cert-manager.crds.yaml
+
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.8.0
 
 kubectl apply -f nginx-example.yaml

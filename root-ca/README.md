@@ -8,16 +8,17 @@
  # Prompty non interactive cert params
  # https://www.shellhacks.com/create-csr-openssl-without-prompt-non-interactive/
 
+  SUBDOMAIN=rpolnx.local
+
   mkdir -p ./root-ca/certs
 
   # Generate the private key of the root CA
-  openssl genrsa -out ./root-ca/certs/tls.key 2048
+  openssl genrsa -out ./root-ca/certs/tls.key 4096 # -passout pass:pass -des3
 
   # Generate the self-signed root CA certificate
-  openssl req -x509 -sha256 -new -nodes -key ./root-ca/certs/tls.key -days 2190 -out ./root-ca/certs/tls.crt \
-  -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=IT Department/CN=rpolnx.com.br/emailAddress=rodrigorpogo@gmail.com/" # 3 years
-
-  k get ns tools || kubectl create namespace tools
+  openssl req -x509 -new -nodes -key ./root-ca/certs/tls.key -sha256 -days 2048 -out ./root-ca/certs/tls.crt \
+  -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=IT Department/CN=*.$SUBDOMAIN/emailAddress=rodrigorpogo@gmail.com/"
+  # -passin pass:pass
 
   kubectl create secret generic -n cert-manager ca-key-pair \
   --from-file=tls.crt=./root-ca/certs/tls.crt \

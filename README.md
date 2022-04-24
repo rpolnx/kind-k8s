@@ -52,7 +52,9 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manif
 ```sh
     helm repo add nginx-stable https://helm.nginx.com/stable
     helm repo update
-    helm install nginx-ingress nginx-stable/nginx-ingress
+    helm install nginx-ingress nginx-stable/nginx-ingress \
+        --set nameOverride='nginx-ingress' \
+        --set fullnameOverride='nginx-ingress'
 ```
 
 ## Istio from cli
@@ -70,11 +72,17 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manif
 ### Cert manager (required from certified)
 
 ```sh
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.4/cert-manager.crds.yaml
-kubectl create namespace cert-manager
+kubectl apply --validate=false \
+-f https://github.com/cert-manager/cert-manager/releases/download/v1.8.0/cert-manager.crds.yaml
+
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.0.4
+
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.8.0
 ```
 
 ### Instalation rancher

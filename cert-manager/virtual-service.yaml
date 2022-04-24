@@ -1,14 +1,14 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: example-nginx-vs
+  name: rpolnx-local-vs
 spec:
   gateways:
-  - example-gateway
+  - rpolnx-local-gateway
   hosts:
-  - api-gateway-pvt.rpolnx.com.br
+  - "*.rpolnx.local"
   http:
-  - name: "nginx-v1-router"
+  - name: "basic-router"
     # match:
     # - uri:
     #     prefix: "/nginx"

@@ -2,9 +2,9 @@
 
 ## Repo info
 
-Chart repository [github](https://github.com/bitnami/charts/tree/master/bitnami/redis)
+Installation Guide [cert-manager.io](https://cert-manager.io/docs/installation/helm/#option-2-install-crds-as-part-of-the-helm-release)
 
-Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/redis)
+Artifactory [artifacthub](https://artifacthub.io/packages/helm/cert-manager/cert-manager)
 
 - Chart Version: `14.8.8`
 
@@ -52,17 +52,22 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/redis)
   # (Optional) Verify certs
   openssl verify -CAfile ./root-ca/certs/ca.cert.pem ./root-ca/certs/ca.cert.pem $CERTS_BASE_PATH/certs/redis-server.cert.pem
   openssl verify -CAfile ./root-ca/certs/ca.cert.pem ./root-ca/certs/ca.cert.pem $CERTS_BASE_PATH/certs/redis-client.cert.pem
+```
 
-  ### Secrets and configs ###
+## Cert manager chart
 
-  ### Installing redis chart ###
+```sh
+kubectl apply --validate=false \
+-f https://github.com/cert-manager/cert-manager/releases/download/v1.8.0/cert-manager.crds.yaml
 
-  helm repo add cert-manager https://charts.jetstack.io
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
 
-
-  helm upgrade --install --version 1.6.1 --namespace cert-manager \
-  --create-namespace cert-manager cert-manager/cert-manager \
-  --set "webhook.timeoutSeconds=4"
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.8.0
 ```
 
 
