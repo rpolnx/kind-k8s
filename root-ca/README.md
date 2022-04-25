@@ -17,7 +17,7 @@
 
   # Generate the self-signed root CA certificate
   openssl req -x509 -new -nodes -key ./root-ca/certs/tls.key -sha256 -days 2048 -out ./root-ca/certs/tls.crt \
-  -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=IT Department/CN=*.$SUBDOMAIN/emailAddress=rodrigorpogo@gmail.com/"
+  -subj "/C=SP/ST=Sao Paulo/L=Sao Paulo/O=Rpolnx/OU=IT Department/CN=Rpolnx CA Cert/emailAddress=rodrigorpogo@gmail.com/"
   # -passin pass:pass
 
   kubectl create secret generic -n cert-manager ca-key-pair \

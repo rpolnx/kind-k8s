@@ -37,4 +37,12 @@ helm install \
   --create-namespace \
   --version v1.8.0
 
+kubectl create secret generic -n cert-manager ca-key-pair \
+--from-file=tls.crt=./root-ca/certs/tls.crt \
+--from-file=tls.key=./root-ca/certs/tls.key
+
+
+kubectl apply -f cert-manager/private_ca_issuer.yaml
+
+
 kubectl apply -f nginx-example.yaml

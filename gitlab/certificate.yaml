@@ -3,15 +3,15 @@ kind: Certificate
 metadata:
   name: gitlab-cert
   namespace: istio-system
-  # annotations:
-  #   "cert-manager.io/issue-temporary-certificate": "true"
+  annotations:
+    "cert-manager.io/issue-temporary-certificate": "true"
 spec:
   secretName: gitlab-cert
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
     organizations:
-      - rpolnx
+      - Rpolnx
   isCA: false
   privateKey:
     algorithm: RSA
@@ -21,6 +21,6 @@ spec:
     name: ca-issuer
     kind: ClusterIssuer
     group: cert-manager.io
-  commonName: gitlab-pvt.rpolnx.com.br
+  commonName: "*.rpolnx.local"
   dnsNames:
-  - "*.gitlab-pvt.rpolnx.com.br"
+  - "*.rpolnx.local"

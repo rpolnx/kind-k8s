@@ -1,17 +1,54 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: gitlab-vs
-  namespace: tools
+  name: gitlab-vs-webservice
+  # namespace: tools
 spec:
   gateways:
-  - gitlab-gateway
+    - gitlab-gateway
   hosts:
-  - gitlab-pvt.rpolnx.com.br
+    - "gitlab.rpolnx.local"
   http:
-  - name: "gitlab-v1-router"
-    route:
-    - destination:
-        host: gitlab-webservice-default
-        port:
-          number: 8080
+    - name: "gitlab-v1-webservice"
+      route:
+        - destination:
+            host: gitlab-webservice-default
+            port:
+              number: 8181
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: gitlab-vs-minio
+  # namespace: tools
+spec:
+  gateways:
+    - gitlab-gateway
+  hosts:
+    - "minio.rpolnx.local"
+  http:
+    - name: "gitlab-v1-minio"
+      route:
+        - destination:
+            host: gitlab-minio-svc
+            port:
+              number: 9000
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: gitlab-vs-registry
+  # namespace: tools
+spec:
+  gateways:
+    - gitlab-gateway
+  hosts:
+    - "registry.rpolnx.local"
+  http:
+    - name: "gitlab-v1-registry"
+      route:
+        - destination:
+            host: gitlab-registry
+            port:
+              number: 5000
