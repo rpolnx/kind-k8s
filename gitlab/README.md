@@ -59,9 +59,15 @@ Docs [Gitlab docs](https://docs.gitlab.com/charts/quickstart/index.html)
 kubectl create secret generic gitlab-runner-cert \
   --from-file="gitlab.rpolnx.local.crt=gitlab/gitlab-chain.pem"
 
-helm install gitlab-runner gitlab/gitlab-runner \
+helm upgrade --install gitlab-runner gitlab/gitlab-runner \
   --set gitlabUrl="https://gitlab.rpolnx.local" \
   --set runnerRegistrationToken="$(kubectl get secret gitlab-gitlab-runner-secret -o jsonpath='{.data.runner-registration-token}' |  base64 --decode ; echo)" \
-  --set certsSecretName="gitlab-runner-cert"
+  --set certsSecretName="gitlab-runner-cert" \
+  --set rbac.create=true \
+  --set privileged=true \
+  --values gitlab/runner-config.yaml
 
 ```
+
+
+

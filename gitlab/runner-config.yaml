@@ -1,0 +1,40 @@
+
+runners:
+  config: |
+    [[runners]]
+
+      environment = ["DOCKER_HOST=tcp://docker:2376","DOCKER_TLS_CERTDIR=/certs", "DOCKER_TLS_VERIFY=1", "DOCKER_CERT_PATH=$DOCKER_TLS_CERTDIR/client"]
+      
+      [runners.kubernetes]
+        namespace = "{{.Release.Namespace}}"
+        image = "ubuntu:20.04"
+        privileged = true
+        allow_privilege_escalation = true
+
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "docker-certs"
+          mount_path = "/certs/client"
+          medium = "Memory"
+        
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "dind-storage"
+          mount_path = "/var/lib/docker"
+        
+        [[runners.kubernetes.volumes.host_path]]
+          name = "hostpath-modules"
+          mount_path = "/lib/modules"
+          read_only = true
+          host_path = "/lib/modules"
+        
+        [[runners.kubernetes.volumes.host_path]]
+          name = "hostpath-cgroup"
+          mount_path = "/sys/fs/cgroup"
+          host_path = "/sys/fs/cgroup"
+        
+        [[runners.kubernetes.volumes.secret]]
+          name = "gitlab-runner-cert"
+          mount_path = "/home/gitlab-runner/.gitlab-runner/certs/"
+          read_only = true
+
+
+
