@@ -3,8 +3,8 @@ runners:
   config: |
     [[runners]]
 
-      environment = ["DOCKER_HOST=tcp://docker:2376","DOCKER_TLS_CERTDIR=/certs", "DOCKER_TLS_VERIFY=1", "DOCKER_CERT_PATH=$DOCKER_TLS_CERTDIR/client"]
-      
+      environment = ["DOCKER_HOST=tcp://docker:2376","DOCKER_TLS_VERIFY=0", "DOCKER_TLS_CERTDIR=/certs", "DOCKER_CERT_PATH=$DOCKER_TLS_CERTDIR/client"]
+
       [runners.kubernetes]
         namespace = "{{.Release.Namespace}}"
         image = "ubuntu:20.04"
@@ -33,8 +33,9 @@ runners:
         
         [[runners.kubernetes.volumes.secret]]
           name = "gitlab-runner-cert"
-          mount_path = "/home/gitlab-runner/.gitlab-runner/certs/"
+          mount_path = "/etc/docker/certs.d/"
           read_only = true
-
-
+          [runners.kubernetes.volumes.secret.items]
+            "registry.rpolnx.local.crt" = "registry.rpolnx.local/ca.crt"
+            "gitlab.rpolnx.local.crt" = "gitlab.rpolnx.local/ca.crt"
 

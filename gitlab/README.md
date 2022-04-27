@@ -57,7 +57,8 @@ Docs [Gitlab docs](https://docs.gitlab.com/charts/quickstart/index.html)
   # edit all CI_SERVER_URL envs to your ci url
 
 kubectl create secret generic gitlab-runner-cert \
-  --from-file="gitlab.rpolnx.local.crt=gitlab/gitlab-chain.pem"
+  --from-file="gitlab.rpolnx.local.crt=gitlab/gitlab-chain.pem" \
+  --from-file="registry.rpolnx.local.crt=gitlab/registry-chain.pem"
 
 helm upgrade --install gitlab-runner gitlab/gitlab-runner \
   --set gitlabUrl="https://gitlab.rpolnx.local" \
