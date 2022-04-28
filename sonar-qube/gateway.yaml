@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: gitlab-gateway
+  name: sonar-qube-gateway
   # namespace: tools
 spec:
   selector:
@@ -12,9 +12,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "gitlab.rpolnx.local"
-    - "minio.rpolnx.local"
-    - "registry.rpolnx.local"
+    - "sonar.rpolnx.local"
     tls:
       httpsRedirect: true
   - port:
@@ -23,8 +21,6 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: gitlab-cert
+      credentialName: sonar-cert
     hosts:
-    - "gitlab.rpolnx.local"
-    - "minio.rpolnx.local"
-    - "registry.rpolnx.local"
+    - "sonar.rpolnx.local"

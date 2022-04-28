@@ -17,27 +17,35 @@ Docs [Sonar docs](https://docs.sonarqube.org/latest/)
   PG_PASSWORD=$(openssl rand -base64 20)
   ADMIN_PASSWORD=$(openssl rand -base64 20)
 
-  ### Installing redis chart ###
+  ### Installing sonar chart ###
 
   helm repo add oteemocharts https://oteemo.github.io/charts
 
-  helm upgrade --install --version 9.8.2 -n tools sonarqube oteemocharts/sonarqube \
-  --values  "./sonar-qube/values.yaml" \
-  --set     "service.type=LoadBalancer" \
+  helm upgrade --install --version 9.8.2 sonarqube oteemocharts/sonarqube \
+  --set     "service.type=ClusterIP" \
   --set     "persistence.enabled=true" \
   --set     "postgresql.enabled=true" \
   --set     "createPostgresqlSecret=true" \
   --set     "postgresql.postgresqlUsername=sonarUser" \
   --set     "postgresql.postgresqlPassword=$PG_PASSWORD" \
   --set     "postgresql.postgresqlDatabase=sonarDB"
-
-  k -n tools create secret generic
+  # -n tools
 ```
 
 ```sh
 
-  kubectl create secret generic -n tools sonarqube-admin \
+  kubectl create secret generic sonarqube-admin \
   --from-literal password=$ADMIN_PASSWORD
+```
+
+```sh
+# get password
+SONAR_USER=admin
+SONAR_PASSWORD=admin # default
+SONAR_PASSWORD=$(kubectl get secrets sonarqube-admin -o json \
+ | jq '.data | map_values(@base64d)' \
+ | jq '.password' | sed -e 's/"//g')
+
 ```
 
 ## Golang CI steps
@@ -64,7 +72,7 @@ This commands will generate "coverage.out" and report.json
   go test -v ./test/... -coverpkg=./... -coverprofile="coverage.out" -covermode=count -json > report.json;
   
   # for multiple packages
-  go test -v ./test/... -coverpkg=./application/...,./domain/...,./infrastructure/... \
+  go test -v ./test/... -coverpkg=./... \
   -coverprofile="coverage.out" -covermode=count -json > report.json;
   
   go tool cover -func coverage.out
