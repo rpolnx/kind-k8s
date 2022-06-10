@@ -104,4 +104,3 @@ docker run --rm --network=host \
     -Dsonar.qualitygate.wait=true
 
 ```
-docker run -ti -v ${pwd}:/root/src — link sonarqube newtmitch/sonar-scanner:4 -Dsonar.host.url=http://sonarqube:9000 -Dsonar.scm.provider=git -Dsonar.projectBaseDir=/root/src -Dsonar.sources=. -Dsonar.projectName=”Web App with Database Demo”
