@@ -1,0 +1,16 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: true
+      - name: istio-ingressgateway-staging
+        namespace: staging
+        enabled: true
+        label:
+          istio: istio-ingressgateway-staging
+        k8s:
+          service:
+            type: NodePort
+
