@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  namespace: argo
+  generateName: wf-resource-template-
+spec:
+  entrypoint: resource-template-entry
+  templates:
+    - name: resource-template-entry
+      resource:
+        action: create
+        manifest: |
+          apiVersion: argoproj.io/v1alpha1
+          kind: Workflow
+          metadata:
+            namespace: argo
+            generateName: wf-script-template-from-resource
+          spec:
+            entrypoint: template-from-resource
+            templates:
+            - name: template-from-resource
+              script:
+                image: python:3.8-slim
+                command: [python]
+                source: |
+                  print("Hello from resource creating a template")
+    - name: k8s-owner-reference
+      resource:
+        action: create
+        manifest: |
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            namespace: argo
+            generateName: owned-eg-
+          data:
+            some: value

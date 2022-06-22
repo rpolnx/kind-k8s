@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  namespace: argo
+  name: wf-steps-templates-parallel #unique identifier of workflow instead of generated name
+spec:
+  entrypoint: steps-template-parallel
+  templates:
+    - name: steps-template-parallel
+      steps:
+        - - name: step1
+            template: task-template-1
+        - - name: step2
+            template: task-template-1
+          - name: step3
+            template: task-template-2
+        - - name: step4
+            template: task-template-2
+
+    - name: task-template-1
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("Task template serial executed")
+    - name: task-template-2
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("Task template serial executed 2")

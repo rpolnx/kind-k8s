@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  namespace: argo
+  generateName: wf-script-template
+spec:
+  entrypoint: script-template
+  templates:
+  - name: script-template
+    script:
+      image: python:3.8-slim
+      command: [python]
+      source: |
+        print("Hello from script template")

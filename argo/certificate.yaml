@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argo-cert
+  namespace: istio-system
+  annotations:
+    "cert-manager.io/issue-temporary-certificate": "true"
+spec:
+  secretName: argo-cert
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+  subject:
+    organizations:
+      - Rpolnx
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: "Argo Local Cert"
+  dnsNames:
+    - "argo-cd.rpolnx.local"
+    - "argo-workflows.rpolnx.local"

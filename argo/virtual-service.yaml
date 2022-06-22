@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: argo-cd-webservice
+  # namespace: tools
+spec:
+  gateways:
+    - argo-gateway
+  hosts:
+    - "argo-cd.rpolnx.local"
+  http:
+    - name: "argo-v1-webservice"
+      match:
+        - port: 80
+        - port: 443
+      route:
+        - destination:
+            host: argo-cd-server.argo.svc.cluster.local
+            port:
+              number: 2746
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: argo-workflows-webservice
+  # namespace: tools
+spec:
+  gateways:
+    - argo-gateway
+  hosts:
+    - "argo-workflows.rpolnx.local"
+  http:
+    - name: "argo-v1-minio"
+      route:
+        - destination:
+            host: argo-workflows-server.argo.svc.cluster.local
+            port:
+              number: 2746

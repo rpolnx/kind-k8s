@@ -19,7 +19,33 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/argo/argo-workflo
 
   helm repo add argo https://argoproj.github.io/argo-helm
 
-  helm install argo-workflows argo/argo-workflows --version 0.16.2
+  helm -n argo upgrade -i argo-workflows argo/argo-workflows --version 0.16.2
+```
+
+### Permissions
+
+```sh
+kubectl -n argo create sa argo-workflow-ui
+kubectl -n argo create rolebinding argo-ui-rb \
+--clusterrole=argo-workflows-admin --serviceaccount=argo:argo-workflow-ui
+
+# kubectl -n argo create role jenkins --verb=list,update --resource=workflows.argoproj.io
+
+# kubectl -n argo create rolebinding jenkins --role=jenkins --serviceaccount=argo:jenkins
+
+
+
+SECRET=$(kubectl -n argo get sa argo-workflow-ui -o=jsonpath='{.secrets[0].name}')
+ARGO_TOKEN="Bearer $(kubectl -n argo get secret $SECRET -o=jsonpath='{.data.token}' | base64 --decode)"
+echo $ARGO_TOKEN
+# Use namespace argo
+```
+
+### Testing
+```sh
+k create -f argo/examples/container_template.yaml
+k create -f argo/examples/script_template.yaml
+k create -f argo/examples/resource_template.yaml
 ```
 
 ## Argo CD
@@ -41,5 +67,5 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/argo/argo-cd)
 
   helm repo add argo https://argoproj.github.io/argo-helm
 
-  helm install argo-cd argo/argo-cd --version 4.8.3
+  helm upgrade -i --wait argo-cd argo/argo-cd --version 4.8.3
 ```
