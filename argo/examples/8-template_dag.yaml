@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  namespace: argo
+  name: dag-tamplate #unique identifier of workflow instead of generated name
+spec:
+  entrypoint: dag-tamplate
+  templates:
+    - name: dag-tamplate
+      dag:
+        tasks:
+          - name: task-1
+            template: task-template
+          - name: task-2
+            template: task-template
+            dependencies: [task-1]
+          - name: task-3
+            template: task-template
+            dependencies: [task-2]
+          - name: delay
+            template: delay-template
+            dependencies: [task-2]
+          - name: task-4
+            template: task-template
+            dependencies: [task-3, delay]
+
+    - name: task-template
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          print("Task template serial executed")
+    - name: delay-template
+      suspend:
+        duration: "10s"
