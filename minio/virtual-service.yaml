@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: minio-vs-webservice
+  # namespace: tools
+spec:
+  gateways:
+    - minio-gateway
+  hosts:
+    - "minio.rpolnx.local"
+  http:
+    - name: "minio-v1-webservice"
+      match:
+        - port: 443
+      route:
+        - destination:
+            host: minio
+            port:
+              number: 9001
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: minio-api-webservice
+  # namespace: tools
+spec:
+  gateways:
+    - minio-gateway
+  hosts:
+    - "minio-api.rpolnx.local"
+  tcp:
+    - match:
+        - port: 80
+      route:
+        - destination:
+            host: minio
+            port:
+              number: 9000
