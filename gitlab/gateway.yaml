@@ -13,7 +13,7 @@ spec:
       protocol: HTTP
     hosts:
     - "gitlab.rpolnx.local"
-    - "minio.rpolnx.local"
+    - "minio-gitlab.rpolnx.local"
     - "registry.rpolnx.local"
     tls:
       httpsRedirect: true
@@ -26,5 +26,5 @@ spec:
       credentialName: gitlab-cert
     hosts:
     - "gitlab.rpolnx.local"
-    - "minio.rpolnx.local"
+    - "minio-gitlab.rpolnx.local"
     - "registry.rpolnx.local"

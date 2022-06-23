@@ -24,5 +24,5 @@ spec:
   commonName: "Gitlab Local Cert"
   dnsNames:
     - "gitlab.rpolnx.local"
-    - "minio.rpolnx.local"
+    - "minio-gitlab.rpolnx.local"
     - "registry.rpolnx.local"

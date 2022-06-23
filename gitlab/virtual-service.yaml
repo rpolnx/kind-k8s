@@ -29,7 +29,7 @@ spec:
   gateways:
     - gitlab-gateway
   hosts:
-    - "minio.rpolnx.local"
+    - "minio-gitlab.rpolnx.local"
   http:
     - name: "gitlab-v1-minio"
       route:
