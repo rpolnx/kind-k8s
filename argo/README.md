@@ -48,6 +48,33 @@ k create -f argo/examples/script_template.yaml
 k create -f argo/examples/resource_template.yaml
 ```
 
+### Logs to MiniO
+```sh
+
+
+kubectl -n argo edit cm argo-workflows-workflow-controller-configmap
+#Adicionar em .data:
+  # artifactRepository: |
+  #   archiveLogs: true
+  #   s3:
+  #     bucket: argo-logs
+  #     endpoint: minio.default.svc.cluster.local:9000
+  #     insecure: true
+  #     accessKeySecret:
+  #       name: minio-cred
+  #       key: accesskey
+  #     secretKeySecret:
+  #       name: minio-cred
+  #       key: secretkey
+  #     createBucketIfNotPresent:
+  #       objectLocking: true
+
+
+kubectl create secret generic -n argo minio-cred \
+  --from-literal=accesskey=$MINIO_USER \
+  --from-literal=secretkey=$MINIO_PASSWORD
+```
+
 ## Argo CD
 
 ### Repo info
@@ -69,3 +96,4 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/argo/argo-cd)
 
   helm upgrade -i --wait argo-cd argo/argo-cd --version 4.8.3
 ```
+
