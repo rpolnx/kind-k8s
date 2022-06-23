@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  namespace: argo
+  generateName: dag-tamplate-with-parameters- #unique identifier of workflow instead of generated name
+spec:
+  entrypoint: dag-tamplate
+  arguments:
+    parameters:
+      - name: message1
+        value: "Task 1 is executed"
+      - name: message2
+        value: "Task 2 is executed"
+      - name: message3
+        value: "Task 3 is executed"
+      - name: message4
+        value: "All tasks done"
+  templates:
+    - name: dag-tamplate
+      inputs:
+        parameters:
+          - name: message1
+          - name: message2
+          - name: message3
+          - name: message4
+      dag:
+        tasks:
+          - name: task-1
+            arguments:
+              parameters: [{ name: text, value: "{{inputs.parameters.message1}}" }]
+            template: task-template
+          - name: task-2
+            arguments:
+              parameters: [{ name: text, value: "{{inputs.parameters.message2}}" }]
+            template: task-template
+            dependencies: [task-1]
+          - name: task-3
+            arguments:
+              parameters: [{ name: text, value: "{{inputs.parameters.message3}}" }]
+            template: task-template
+            dependencies: [task-1]
+          - name: delay
+            template: delay-template
+            dependencies: [task-2, task-3]
+          - name: task-4
+            arguments:
+              parameters: [{ name: text, value: "{{inputs.parameters.message4}}" }]
+            template: task-template
+            dependencies: [delay]
+
+    - name: task-template
+      inputs:
+        parameters:
+          - name: text
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          p = "{{inputs.parameters.text}}"
+          print(p)
+    - name: delay-template
+      suspend:
+        duration: "10s"

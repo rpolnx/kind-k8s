@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  namespace: argo
+  generateName: script-template-from-other- #unique identifier of workflow instead of generated name
+spec:
+  entrypoint: script-template-from-other
+  arguments:
+    parameters:
+      - name: message1
+        value: "Task 1 is executed"
+      - name: message4
+        value: "All tasks done"
+  templates:
+    - name: script-template-from-other
+      inputs:
+        parameters:
+          - name: message1
+          - name: message4
+      dag:
+        tasks:
+          - name: task-1
+            arguments:
+              parameters: [{ name: text, value: "{{inputs.parameters.message1}}" }]
+            template: task-template
+          - name: task-2
+            arguments:
+              parameters: [{ name: text, value: "{{inputs.parameters.message1}}" }]
+            template: task-template
+          - name: task-3
+            template: task-output
+            dependencies: [task-1]
+          - name: delay
+            template: delay-template
+            dependencies: [task-2, task-3]
+          - name: task-4
+            arguments:
+              parameters: [{ name: text, value: "{{tasks.task-3.outputs.result}}" }]
+            template: task-template
+            dependencies: [delay]
+
+    - name: task-template
+      inputs:
+        parameters:
+          - name: text
+      script:
+        image: python:3.8-slim
+        command: [python]
+        source: |
+          p = "{{inputs.parameters.text}}"
+          print(p)
+    - name: delay-template
+      suspend:
+        duration: "10s"
+    - name: task-output
+      script: 
+        image: node:lts-buster-slim
+        command: [node]
+        source: |
+          const out = "Print result";
+          console.log(out);

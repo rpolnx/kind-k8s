@@ -45,6 +45,9 @@ echo $ARGO_TOKEN
 k create -f argo/examples/container_template.yaml
 k create -f argo/examples/script_template.yaml
 k create -f argo/examples/resource_template.yaml
+
+argo submit -n argo --watch argo/examples/9-template_dag_with_parameters.yaml \
+-p message1="Paramter from terminal"
 ```
 
 ### Logs to MiniO
@@ -83,6 +86,13 @@ kubectl -n argo edit cm argo-workflows-workflow-controller-configmap
 kubectl create secret generic -n argo minio-cred \
   --from-literal=accesskey=$MINIO_USER \
   --from-literal=secretkey=$MINIO_PASSWORD
+
+MINIO_USER=$(kubectl get secrets minio -o json | jq '.data | map_values(@base64d)' | jq -r '."root-user"')
+MINIO_PASSWORD=$(kubectl get secrets minio -o json | jq '.data | map_values(@base64d)' | jq -r '."root-password"')
+
+echo "user: $MINIO_USER -- password: $MINIO_PASSWORD"
+
+
 ```
 
 ## Argo CD
