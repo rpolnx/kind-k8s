@@ -26,12 +26,11 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/argo/argo-workflo
 
 ```sh
 kubectl -n argo create sa argo-workflow-ui
+
+kubectl -n argo create role argo-admin-role --verb=create,delete,deletecollection,get,list,patch,update,watch --resource=pods,workflows,workflows/finalizers,workfloweventbindings,workfloweventbindings/finalizers,workflowtasksets,workflowtasksets/finalizers,workflowtemplates,workflowtemplates/finalizers,cronworkflows,cronworkflows/finalizers,clusterworkflowtemplates,clusterworkflowtemplates/finalizers
+
 kubectl -n argo create rolebinding argo-ui-rb \
---clusterrole=argo-workflows-admin --serviceaccount=argo:argo-workflow-ui
-
-# kubectl -n argo create role jenkins --verb=list,update --resource=workflows.argoproj.io
-
-# kubectl -n argo create rolebinding jenkins --role=jenkins --serviceaccount=argo:jenkins
+--role=argo-admin-role --serviceaccount=argo:argo-workflow-ui
 
 
 
@@ -54,20 +53,31 @@ k create -f argo/examples/resource_template.yaml
 
 kubectl -n argo edit cm argo-workflows-workflow-controller-configmap
 #Adicionar em .data:
-  # artifactRepository: |
-  #   archiveLogs: true
-  #   s3:
-  #     bucket: argo-logs
-  #     endpoint: minio.default.svc.cluster.local:9000
-  #     insecure: true
-  #     accessKeySecret:
-  #       name: minio-cred
-  #       key: accesskey
-  #     secretKeySecret:
-  #       name: minio-cred
-  #       key: secretkey
-  #     createBucketIfNotPresent:
-  #       objectLocking: true
+  config: |
+    containerRuntimeExecutor: emissary
+    artifactRepository:
+      archiveLogs: true
+      s3:
+        bucket: argo-logs
+        endpoint: minio.default.svc.cluster.local:9000
+        insecure: true
+        accessKeySecret:
+          name: minio-cred
+          key: accesskey
+        secretKeySecret:
+          name: minio-cred
+          key: secretkey
+    workflowDefaults:
+      metadata:
+        annotations:
+          argo: workflows
+        labels:
+          foo: bar
+      spec:
+        ttlStrategy:
+          secondsAfterSuccess: 3600
+        parallelism: 3
+        serviceAccountName: "argo-workflow-ui"
 
 
 kubectl create secret generic -n argo minio-cred \
