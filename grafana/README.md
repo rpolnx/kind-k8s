@@ -2,9 +2,9 @@
 
 ## Repo info
 
-Chart repository [main page](https://prometheus.io/)
+Chart repository [main page](https://github.com/grafana/grafana)
 
-Artifactory [artifacthub](https://artifacthub.io/packages/helm/prometheus-community/prometheus)
+Artifactory [artifacthub](https://artifacthub.io/packages/helm/grafana/grafana)
 
 - Chart Version: `6.19.2`
 
@@ -28,7 +28,7 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/prometheus-commun
     --from-literal=admin-password=$GRAFANA_PASSWORD
 ```
 
-## Installing prometheus
+## Installing grafana
 
 ```sh
   helm repo add grafana https://grafana.github.io/helm-charts
