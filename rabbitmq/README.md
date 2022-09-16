@@ -29,7 +29,7 @@ helm -n $NS upgrade -i rabbitmq bitnami/rabbitmq \
 --set auth.username=$RABBITMQ_USER     \
 --set auth.password="$RABBITMQ_PASS" \
 --set auth.erlangCookie="$ERLANG_COOKIE" \
---set "extraPlugins=rabbitmq_shovel"
+--set "extraPlugins=rabbitmq_shovel rabbitmq_prometheus"
 
 
 # get pass
@@ -59,12 +59,13 @@ NS=default
 helm -n $NS upgrade -i rabbitmq-exporter prometheus-community/prometheus-rabbitmq-exporter \
 --version 1.3.0 \
 --set "fullnameOverride=rabbitmq-exporter" \
---set rabbitmq.url="http://rabbitmq.default.svc.cluster.local:15672" \
+--set rabbitmq.url="http://rabbitmq-headless.default.svc.cluster.local:15672" \
 --set "rabbitmq.user=$RABBITMQ_USER" \
 --set "rabbitmq.existingPasswordSecret=rabbitmq" \
 --set "rabbitmq.existingPasswordSecretKey=rabbitmq-password" \
---set "prometheus.monitor.enabled=true"
-
+--set "prometheus.monitor.enabled=true" \
+--set "prometheus.monitor.additionalLabels.release=prometheus-stack" \
+--set "prometheus.monitor.interval=1s"
 
 k port-forward svc/rabbitmq-exporter 8080:9419
 
