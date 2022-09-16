@@ -58,14 +58,16 @@ NS=default
 
 helm -n $NS upgrade -i rabbitmq-exporter prometheus-community/prometheus-rabbitmq-exporter \
 --version 1.3.0 \
+--set "fullnameOverride=rabbitmq-exporter" \
 --set rabbitmq.url="http://rabbitmq.default.svc.cluster.local:15672" \
 --set "rabbitmq.user=$RABBITMQ_USER" \
 --set "rabbitmq.existingPasswordSecret=rabbitmq" \
---set "rabbitmq.existingPasswordSecretKey=rabbitmq-password"
+--set "rabbitmq.existingPasswordSecretKey=rabbitmq-password" \
+--set "prometheus.monitor.enabled=true"
 
 
-k port-forward svc/rabbitmq-exporter-prometheus-rabbitmq-exporter 8080:9419
+k port-forward svc/rabbitmq-exporter 8080:9419
 
-# Access http://127.0.0.1:8080/metrics
 curl -XGET http://127.0.0.1:8080/metrics
 ```
+
