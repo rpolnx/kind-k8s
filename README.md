@@ -21,8 +21,6 @@ kind create cluster --config  cluster-kind.yml --name kind-common
 ## Metric Server
 
 ```sh
- kubectl apply -f components-ms.yaml
-
  helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 
  helm upgrade -i -n kube-system metrics-server metrics-server/metrics-server \
@@ -46,7 +44,15 @@ Configuraton from the [docs](https://kind.sigs.k8s.io/docs/user/loadbalancer/)
 
  helm upgrade -i -n kube-system metallb metallb/metallb
 
- docker network inspect -f '{{.IPAM.Config}}' kind
+#  docker network inspect -f '{{.IPAM.Config}}' kind
+
+# set automatic docker IPAM ip to metallb-confimap
+ docker network inspect kind | jq -r '.[0].IPAM.Config[0].Subnet' | \
+   sed -e 's/\.0\/.*//g' | read DOCKER_POOL_IP_BASE && \
+   echo "${DOCKER_POOL_IP_BASE}.200-${DOCKER_POOL_IP_BASE}.255" | 
+   read METALLB_POOL && \
+   sed -i "s/172.*/$METALLB_POOL/g" metallb-configmap.yaml
+ 
  kubectl apply -f metallb-configmap.yaml
 ```
 
