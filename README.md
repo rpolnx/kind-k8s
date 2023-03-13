@@ -22,6 +22,12 @@ kind create cluster --config  cluster-kind.yml --name kind-common
 
 ```sh
  kubectl apply -f components-ms.yaml
+
+ helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+
+ helm upgrade -i -n kube-system metrics-server metrics-server/metrics-server \
+ --set "args={--kubelet-insecure-tls=true}" \
+ --set apiService.insecureSkipTLSVerify=true
 ```
 
 ## Weave (Optional)
@@ -36,13 +42,10 @@ Configuraton from the [docs](https://kind.sigs.k8s.io/docs/user/loadbalancer/)
 
 ```sh
 
- kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
+ helm repo add metallb https://metallb.github.io/metallb
 
- kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+ helm upgrade -i -n kube-system metallb metallb/metallb
 
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
-
- # Search docker network to apply on configmap
  docker network inspect -f '{{.IPAM.Config}}' kind
  kubectl apply -f metallb-configmap.yaml
 ```
@@ -50,24 +53,31 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manif
 ## Nginx ingress controller
 
 ```sh
-    helm repo add nginx-stable https://helm.nginx.com/stable
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
     helm repo update
-    helm install nginx-ingress nginx-stable/nginx-ingress \
-        --set nameOverride='nginx-ingress' \
-        --set fullnameOverride='nginx-ingress'
+    helm upgrade -n kube-system -i nginx-ingress ingress-nginx/ingress-nginx
 ```
 
 ## Istio from cli
 
 ```sh
-    istioctl install --set profile=demo --vklog=9 -y
+    # istioctl install --set profile=demo --vklog=9 -y
+
+  helm repo add istio https://istio-release.storage.googleapis.com/charts
+  helm repo update
+
+  kubectl create namespace istio-system
+  helm install istio-base istio/base -n istio-system
+  helm install istiod istio/istiod -n istio-system --wait
+
+  kubectl create namespace istio-system
+  kubectl label namespace istio-system istio-injection=enabled
+  helm install istio-ingress istio/gateway -n istio-system --wait
+
 ```
 
 ## Rancher
-
-```sh
-
-```
 
 ### Cert manager (required from certified)
 
@@ -94,7 +104,24 @@ helm install rancher rancher-latest/rancher --namespace cattle-system \
     --set hostname=eks.rpolnx.com.br --set replicas=1 --set ingress.tls.source=letsEncrypt --set letsEncrypt.email=rodrigorpogo@gmail.com
 ```
 
-### Testing
+## Monitoring
+
+### Node Exporter
+
+```sh
+
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  helm repo update
+
+  k create ns monitoring || echo "ns already exists"
+  NS=monitoring
+
+  helm upgrade -i -n $NS prometheus-stack prometheus-community/kube-prometheus-stack \
+  --set "grafana.adminPassword=password"
+
+```
+
+# Testing
 
 ```sh
  k apply -f nginx-example.yaml

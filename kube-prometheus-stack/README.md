@@ -6,9 +6,15 @@ Chart repository [main page](https://github.com/prometheus-operator/kube-prometh
 
 Artifactory [artifacthub](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack)
 
-- Chart Version: `40.0.0`
+- Chart Version: `43.1.4`
 
 ## Installation
+
+Install
+- Alert manager
+- Prometheus Operator
+- Prometheus
+- NodeExporter
 
 ### Installing prometheus stack
 
@@ -17,17 +23,16 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/prometheus-commun
 
   helm repo update
 
-  NS=default
+  k create ns monitoring || echo "ns already exists"
+  NS=monitoring
 
-  helm upgrade --install -n $NS prometheus-stack prometheus-community/kube-prometheus-stack \
-  --version 40.0.0
+  helm upgrade --install -n $NS prometheus-stack prometheus-community/kube-prometheus-stack #43.1.4
 
 ```
 
-
 ---
 
-# Optional
+# Optional other option
 
 
 # Bitnami Kube Prometheus

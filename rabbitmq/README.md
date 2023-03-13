@@ -15,7 +15,7 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/bitnami/rabbitmq)
 
 ```sh
 
-NS=default
+NS=tools
 
 RABBITMQ_USER=root
 RABBITMQ_PASS=$(openssl rand -base64 20)
@@ -54,12 +54,12 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/prometheus-commun
 
 ```sh
 
-NS=default
+NS=tools
 
 helm -n $NS upgrade -i rabbitmq-exporter prometheus-community/prometheus-rabbitmq-exporter \
 --version 1.3.0 \
 --set "fullnameOverride=rabbitmq-exporter" \
---set rabbitmq.url="http://rabbitmq-headless.default.svc.cluster.local:15672" \
+--set "rabbitmq.url=http://rabbitmq-headless.$NS.svc.cluster.local:15672" \
 --set "rabbitmq.user=$RABBITMQ_USER" \
 --set "rabbitmq.existingPasswordSecret=rabbitmq" \
 --set "rabbitmq.existingPasswordSecretKey=rabbitmq-password" \

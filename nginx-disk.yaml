@@ -1,0 +1,72 @@
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: pv-ex
+# spec:
+#   storageClassName: standard
+#   accessModes:
+#     - ReadWriteOnce
+#   capacity:
+#     storage: 2Gi
+  # hostPath:
+  #   path: /data/nginx-test
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-www
+spec:
+  volumeName: pvc-15d220cc-78d2-4305-ba77-8fe462e01b53 # need name to claim a current pvc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Mi
+# kubectl patch pv $PV_NAME -p '{"spec":{"claimRef": null}}' --> release pv from pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      volumes:
+      - name: www
+        persistentVolumeClaim:
+          claimName: pvc-www
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+
+####
+
+# Expand disk on kubernetes:
+
+# First, if you have a PV that was created from PVC, you should unbind.
+
+# - Verify reclaim policy from PV. If it's 'Delete', change to 'Retain' to maintain the disk after the PVC deletion.
+# - Delete old PVC
+# - Patch claim's ref from PV to null
+#     kubectl patch pv $PV_NAME -p '{"spec":{"claimRef": null}}'
+# - Do the modifications on PV.
+# - Create a new PVC claiming that disk with volumeName = $PV_NAME
+# - Recreate pods
+
+# OBS: if some pod is using PVC, you should delete the current pod to detach PVC.
