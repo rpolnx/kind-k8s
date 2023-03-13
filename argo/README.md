@@ -103,7 +103,7 @@ Chart repository [github](https://github.com/argoproj/argo-cd)
 
 Artifactory [artifacthub](https://artifacthub.io/packages/helm/argo/argo-cd)
 
-- Chart Version: ``4.8.3``
+- Chart Version: ``5.26.0``
 
 ### Installation
 
@@ -114,6 +114,6 @@ Artifactory [artifacthub](https://artifacthub.io/packages/helm/argo/argo-cd)
 
   helm repo add argo https://argoproj.github.io/argo-helm
 
-  helm upgrade -i --wait argo-cd argo/argo-cd --version 4.8.3
+  helm upgrade -i --wait argo-cd argo/argo-cd --version 5.26.0
 ```
 
